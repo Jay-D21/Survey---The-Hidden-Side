@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>The Hidden Side — Sociological Survey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F6F4EE;
+      --surface: #FFFFFF;
+      --surface-subtle: #FAF9F5;
+      --ink: #141413;
+      --ink-secondary: #52514E;
+      --ink-muted: #787671;
+      --border: #E5E1D8;
+      --border-hover: #C7C2B6;
+      --accent: #141413;
+      --accent-warm: #B84A27;
+      --accent-warm-bg: #FDF6F3;
+      --accent-warm-border: #E8C5B8;
+      --selected-bg: #F3F1EC;
+      --error: #B91C1C;
+      --error-bg: #FEF2F2;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 2px 10px rgba(20, 20, 19, 0.04), 0 1px 2px rgba(20, 20, 19, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.55;
+      padding-bottom: 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Sticky Top Progress Bar */
+    .progress-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(246, 244, 238, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 18px;
+    }
+    .progress-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .progress-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+    }
+    .progress-track {
+      flex: 1;
+      height: 5px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-warm);
+      border-radius: 999px;
+      transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .progress-pct {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink);
+      min-width: 34px;
+      text-align: right;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px 16px 0;
+    }
+
+    /* Editorial Masthead */
+    .masthead {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .masthead::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--ink);
+    }
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .meta-pill {
+      font-size: 0.73rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--ink-secondary);
+    }
+    .masthead h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: clamp(1.55rem, 5vw, 2.05rem);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .masthead p {
+      font-size: 0.94rem;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+    }
+
+    /* Section Divider */
+    .section-divider {
+      margin: 32px 0 16px;
+      padding: 14px 18px;
+      background: var(--ink);
+      color: var(--surface);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .section-divider h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    .section-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #F6F4EE;
+      font-weight: 600;
+    }
+
+    /* Question Cards */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .q-card.has-error {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+    .q-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .q-num {
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--accent-warm);
+    }
+    .q-badge {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 99px;
+    }
+    .q-title {
+      font-size: 1.03rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    /* Option Lists & Grids */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .options-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .options-grid-age {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 480px) {
+      .options-grid-3 {
+        grid-template-columns: 1fr;
+      }
+      .q-card {
+        padding: 18px 16px;
+      }
+    }
+
+    /* Custom Tactile Option Cards */
+    .opt-card {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 13px 14px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.16s ease;
+    }
+    .opt-card.compact {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 10px;
+    }
+    .opt-card:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-subtle);
+    }
+    .opt-card:active {
+      transform: scale(0.992);
+    }
+    .opt-card.selected {
+      border-color: var(--ink);
+      background: var(--selected-bg);
+      box-shadow: 0 1px 3px rgba(20, 20, 19, 0.06);
+    }
+
+    /* Accessible Custom Input Reset */
+    .opt-input {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      border: 1.5px solid var(--border-hover);
+      background: var(--surface);
+      display: grid;
+      place-content: center;
+      margin-top: 1px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .opt-input[type="radio"] {
+      border-radius: 50%;
+    }
+    .opt-input[type="checkbox"] {
+      border-radius: 6px;
+    }
+    .opt-card.selected .opt-input {
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .opt-input[type="radio"]::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--surface);
+      transform: scale(0);
+      transition: transform 0.15s ease;
+    }
+    .opt-card.selected .opt-input[type="radio"]::after {
+      transform: scale(1);
+    }
+    .opt-input[type="checkbox"]::after {
+      content: "";
+      width: 10px;
+      height: 6px;
+      border-left: 2px solid var(--surface);
+      border-bottom: 2px solid var(--surface);
+      transform: rotate(-45deg) translate(1px, -1px) scale(0);
+      transition: transform 0.15s ease;
+    }
+    .opt-card.selected .opt-input[type="checkbox"]::after {
+      transform: rotate(-45deg) translate(1px, -1px) scale(1);
+    }
+
+    .opt-label {
+      font-size: 0.94rem;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.45;
+    }
+    .opt-label strong {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* Nested Conditional "WHY" Follow-up Thread */
+    .why-thread {
+      margin-top: 16px;
+      padding: 18px 16px;
+      border-radius: var(--radius-md);
+      background: var(--accent-warm-bg);
+      border: 1.5px solid var(--accent-warm-border);
+      animation: slideIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes slideIn {
+      from { transform: translateY(-6px); }
+      to { transform: translateY(0); }
+    }
+    .why-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.73rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-warm);
+      margin-bottom: 6px;
+    }
+
+    /* Text Inputs */
+    .text-input, .textarea-input {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 0.93rem;
+      transition: border-color 0.15s ease;
+    }
+    .text-input:focus, .textarea-input:focus {
+      outline: none;
+      border-color: var(--ink);
+    }
+
+    .error-banner {
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: #FEE2E2;
+      color: var(--error);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 16px 24px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--ink);
+      color: var(--surface);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(20, 20, 19, 0.18);
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .submit-btn:hover {
+      background: #292826;
+    }
+    .submit-btn:active {
+      transform: scale(0.99);
+    }
+    .submit-btn:disabled {
+      background: var(--ink-muted);
+      cursor: wait;
+    }
+
+    /* Confirmation Card */
+    .thank-you-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      margin-top: 24px;
+    }
+    .thank-you-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--selected-bg);
+      color: var(--ink);
+      display: inline-grid;
+      place-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Live Sticky Progress Bar -->
+  <header class="progress-header">
+    <div class="progress-inner">
+      <span class="progress-label">The Hidden Side Survey</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+  </header>
+
+  <main class="container" id="appRoot">
+    <!-- Editorial Masthead -->
+    <section class="masthead">
+      <div class="meta-pills">
+        <span class="meta-pill">100% Anonymous</span>
+        <span class="meta-pill">90-Second Read</span>
+        <span class="meta-pill">Adaptive Flow</span>
+      </div>
+      <h1>The Hidden Side: Unspoken Male Struggles, Laws &amp; Societal Reality</h1>
+      <p>Please answer with complete candor based on lived reality rather than what sounds politically correct. Follow-up questions adapt automatically to your selections.</p>
+    </section>
+
+    <form id="surveyForm" novalidate>
+
+      <!-- Q1: GENDER -->
+      <div class="q-card" data-qid="Q1_Gender" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 01</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Your Gender</div>
+        <div class="options-grid-3">
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q1_Gender" value="Male" />
+            <span class="opt-label">Male</span>
+          </label>
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q1_Gender" value="Female" />
+            <span class="opt-label">Female</span>
+          </label>
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q1_Gender" value="Prefer not to say" />
+            <span class="opt-label">Prefer not to say</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <!-- Q2: AGE GROUP -->
+      <div class="q-card" data-qid="Q2_Age" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 02</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Your Age Group</div>
+        <div class="options-grid-age">
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q2_Age" value="Under 18" />
+            <span class="opt-label">Under 18</span>
+          </label>
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q2_Age" value="18–22" />
+            <span class="opt-label">18–22</span>
+          </label>
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q2_Age" value="23–28" />
+            <span class="opt-label">23–28</span>
+          </label>
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q2_Age" value="29–35" />
+            <span class="opt-label">29–35</span>
+          </label>
+          <label class="opt-card compact">
+            <input class="opt-input" type="radio" name="Q2_Age" value="36+" />
+            <span class="opt-label">36+</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <!-- Q3: STRUGGLES IGNORED (+ Dynamic Slot for Q4 Why) -->
+      <div class="q-card" data-qid="Q3_Struggles_Ignored" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 03</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">When society and media talk about "Gender Equality," do you feel men's struggles and mental health are ignored?</div>
+        <div class="options-list">
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q3_Struggles_Ignored" value="Yes—nobody talks about men's pain seriously" />
+            <span class="opt-label">Yes — nobody talks about men's pain seriously</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q3_Struggles_Ignored" value="Somewhat—it is brought up rarely and quickly dismissed" />
+            <span class="opt-label">Somewhat — it is brought up rarely and quickly dismissed</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q3_Struggles_Ignored" value="No—both genders get equal attention" />
+            <span class="opt-label">No — both genders get equal attention</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+        <!-- Dynamic mount point for Q4 Why -->
+        <div id="slot-q4"></div>
+      </div>
+
+      <!-- Q5: UNEMPLOYED RESPECT -->
+      <div class="q-card" data-qid="Q5_Unemployed_Respect" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 04</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Be honest: In Indian society today, is a man respected as a human being if he is unemployed or earning very little?</div>
+        <div class="options-list">
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q5_Unemployed_Respect" value="No—respect is directly tied to income and status" />
+            <span class="opt-label">No — a man’s respect in family and society is directly tied to his income and status</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q5_Unemployed_Respect" value="Supported temporarily, but quickly looked down upon as a failure" />
+            <span class="opt-label">He is supported temporarily, but quickly looked down upon as a "failure"</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q5_Unemployed_Respect" value="Yes—respected equally regardless of money" />
+            <span class="opt-label">Yes — he is respected equally regardless of money</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <!-- Q6: SOCIAL MEDIA TRIAL -->
+      <div class="q-card" data-qid="Q6_Media_Trial" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 05</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">When a woman accuses a man on social media without proof, what happens first in real life?</div>
+        <div class="options-list">
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q6_Media_Trial" value="Instant Media Trial: Declared guilty within minutes" />
+            <span class="opt-label"><strong>Instant Media Trial:</strong> The man is declared guilty within minutes, losing his job and dignity before any investigation</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q6_Media_Trial" value="People wait neutrally for police verification" />
+            <span class="opt-label">People wait neutrally for police verification and evidence</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q6_Media_Trial" value="Society blames the woman more than the man" />
+            <span class="opt-label">Society blames the woman more than the man</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <!-- Q7: LEGAL AWARENESS -->
+      <div class="q-card" data-qid="Q7_Legal_Awareness" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 06</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Did you know that under current Indian laws (BNS 2023, Domestic Violence Act, POSH), adult men have ZERO legal protection if they are victims of rape, domestic abuse by a wife, or workplace sexual harassment?</div>
+        <div class="options-list">
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q7_Legal_Awareness" value="Yes, I knew Indian laws only protect women" />
+            <span class="opt-label">Yes, I knew Indian laws only protect women in these crimes</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q7_Legal_Awareness" value="No, I assumed the law was gender-neutral" />
+            <span class="opt-label">No, I assumed the law was gender-neutral for everyone</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <!-- Q8: FAKE FEMINISM (+ Dynamic Slot for Q8b Why) -->
+      <div class="q-card" data-qid="Q8_Fake_Feminism" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 07</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">What is your honest opinion on "Fake Feminism" (misusing women’s protection laws for revenge, extortion, or heavy alimony)?</div>
+        <div class="options-list">
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q8_Fake_Feminism" value="Massive growing problem that ruins innocent men" />
+            <span class="opt-label">It is a massive, growing problem that ruins innocent men's lives and discredits real female victims</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q8_Fake_Feminism" value="Happens sometimes, but genuine abuse is still main issue" />
+            <span class="opt-label">It happens sometimes, but genuine abuse against women is still the main issue</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q8_Fake_Feminism" value="Rare and exaggerated on social media" />
+            <span class="opt-label">It is rare and exaggerated on social media</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+        <!-- Dynamic mount point for Q8b Why -->
+        <div id="slot-q8b"></div>
+      </div>
+
+      <!-- Q9: ALIMONY & REFORM -->
+      <div class="q-card" data-qid="Q9_Alimony_Law" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 08</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">If an educated, capable couple gets divorced, what should the rule on alimony/maintenance be, and should false accusers face strict jail time?</div>
+        <div class="options-list">
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q9_Alimony_Law" value="No alimony if both can earn + strict jail time for false cases" />
+            <span class="opt-label">No alimony if both can earn + strict jail time (5–10 years) for proven false cases</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q9_Alimony_Law" value="Gender-neutral alimony + heavy fines for false cases" />
+            <span class="opt-label">Gender-neutral alimony (based on who earns more) + heavy fines for false cases</span>
+          </label>
+          <label class="opt-card">
+            <input class="opt-input" type="radio" name="Q9_Alimony_Law" value="Keep current laws as they are" />
+            <span class="opt-label">Keep current laws as they are (husband pays maintenance; no strict penalty for false cases)</span>
+          </label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <!-- DYNAMIC GENDER-SPECIFIC SECTION MOUNT POINT -->
+      <div id="slot-gender-section"></div>
+
+      <!-- FINAL OPEN INSIGHT -->
+      <div class="q-card">
+        <div class="q-header">
+          <span class="q-num">Final Reflection</span>
+          <span class="q-badge">Optional</span>
+        </div>
+        <div class="q-title">In one sentence, what is ONE harsh reality about men’s hidden pain or "Fake Feminism" that society refuses to admit—and WHY?</div>
+        <textarea class="textarea-input" name="Q18_Final_Insight" rows="3" placeholder="Write your candid thought here..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Submit Anonymous Response</button>
+    </form>
+  </main>
+
+  <script>
+    // Pre-connected to your deployed Google Apps Script Web App URL
+    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw02KiksIu8_H9hReXcfVjM9didMDrY3TuwTTK__1BwvnNeJz8cBBolS_pDSpgDNlnd_w/exec";
+
+    const form = document.getElementById('surveyForm');
+    const slotQ4 = document.getElementById('slot-q4');
+    const slotQ8b = document.getElementById('slot-q8b');
+    const slotGender = document.getElementById('slot-gender-section');
+
+    // Templates for dynamically mounted conditional blocks
+    const TEMPLATE_Q4 = `
+      <div class="why-thread" data-qid="Q4_Why_Unseen" data-type="checkbox" data-max="3">
+        <div class="why-tag">↳ Follow-Up • Select up to 3</div>
+        <div class="q-title">WHY do you think men’s misery and struggles never come into the public picture?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q4_Why_Unseen" value="Childhood Conditioning: Mard ko dard nahi hota" /><span class="opt-label"><strong>Childhood Conditioning:</strong> Boys are raised with "Mard ko dard nahi hota" / "Boys don't cry"</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q4_Why_Unseen" value="Loss of Respect: Family/partners lose respect" /><span class="opt-label"><strong>Loss of Respect:</strong> Even close family or partners subtly lose respect for a man who shows weakness</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q4_Why_Unseen" value="Fear of Mockery: Society laughs at male victims" /><span class="opt-label"><strong>Fear of Mockery:</strong> Society laughs at men who report domestic abuse or harassment</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q4_Why_Unseen" value="One-Sided System: Courts/police believe women automatically" /><span class="opt-label"><strong>One-Sided System:</strong> Men know police, courts, and society will automatically believe the woman</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q4_Why_Unseen" value="Blame Game: Shut down with 'Men created patriarchy'" /><span class="opt-label"><strong>Blame Game:</strong> Whenever men's issues are raised, they are shut down with "Men created patriarchy"</span></label>
+        </div>
+        <input class="text-input" type="text" name="Q4_Why_Unseen_Other" placeholder="Other reason (optional)..." />
+        <div class="error-slot"></div>
+      </div>
+    `;
+
+    const TEMPLATE_Q8B = `
+      <div class="why-thread" data-qid="Q8b_Why_Misuse_Rising" data-type="checkbox">
+        <div class="why-tag">↳ Follow-Up • Select all that apply</div>
+        <div class="q-title">WHY do you think false cases and the misuse of women-centric laws are rising?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q8b_Why_Misuse_Rising" value="Zero Fear of Punishment" /><span class="opt-label"><strong>Zero Fear of Punishment:</strong> Women who file proven false cases almost never face jail time</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q8b_Why_Misuse_Rising" value="Easy Financial Extortion" /><span class="opt-label"><strong>Easy Financial Extortion:</strong> False cases are used as a shortcut to demand lakhs/crores in divorce settlements</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q8b_Why_Misuse_Rising" value="Personal Revenge" /><span class="opt-label"><strong>Personal Revenge:</strong> Used to settle scores after consensual breakups or family arguments</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="Q8b_Why_Misuse_Rising" value="Legal Loopholes" /><span class="opt-label"><strong>Legal Loopholes:</strong> One-sided laws presume the man is guilty until he proves his innocence</span></label>
+        </div>
+        <input class="text-input" type="text" name="Q8b_Why_Misuse_Other" placeholder="Other reason (optional)..." />
+        <div class="error-slot"></div>
+      </div>
+    `;
+
+    const TEMPLATE_MEN_SECTION = `
+      <div class="section-divider">
+        <h2>The Lived Male Experience</h2>
+        <span class="section-tag">Men's Section</span>
+      </div>
+
+      <div class="q-card" data-qid="M_Q10_Top_Pressures" data-type="checkbox" data-max="2">
+        <div class="q-header">
+          <span class="q-num">Question 09</span>
+          <span class="q-badge">Select up to 2</span>
+        </div>
+        <div class="q-title">Over 73% of all suicides in India are committed by men. Which of these unspoken pressures stresses you the most as a man?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q10_Top_Pressures" value="Financial Saviour Pressure" /><span class="opt-label">The pressure to be the permanent financial "saviour" of my parents and future family</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q10_Top_Pressures" value="Fear of Toxic Marriage / False Case / Alimony" /><span class="opt-label">Fear of getting trapped in a toxic marriage, false legal case, or heavy alimony battle</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q10_Top_Pressures" value="Fear of False Accusation in Public/Work" /><span class="opt-label">Fear of being falsely accused in college, workplace, or public spaces with no law to protect me</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q10_Top_Pressures" value="Emotional Loneliness / Only Valued for Provision" /><span class="opt-label">Emotional loneliness — feeling that I am only valued for what I achieve or provide, not who I am</span></label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <div class="q-card" data-qid="M_Q11_Who_To_Talk" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 10</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">When you are going through your darkest mental stress, depression, or emotional pain, who do you talk to?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q11_Who_To_Talk" value="Nobody — I keep it entirely inside and deal with it alone" /><span class="opt-label">Nobody — I keep it entirely inside and deal with it alone</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q11_Who_To_Talk" value="One close male friend" /><span class="opt-label">One close male friend</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q11_Who_To_Talk" value="My partner / female friend" /><span class="opt-label">My partner / female friend</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q11_Who_To_Talk" value="My parents or siblings" /><span class="opt-label">My parents or siblings</span></label>
+        </div>
+        <div class="error-slot"></div>
+        <div id="slot-q11b"></div>
+      </div>
+
+      <div class="q-card" data-qid="M_Q12_Partner_Abuse" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 11</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Have you (or a close male friend/relative) ever faced verbal abuse, physical hitting, blackmail, or threats of false cases from a female partner?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q12_Partner_Abuse" value="Yes, experienced personally" /><span class="opt-label">Yes, I have experienced it personally</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q12_Partner_Abuse" value="Yes, seen a close friend/relative go through it" /><span class="opt-label">Yes, I have seen a close friend or male relative go through it</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q12_Partner_Abuse" value="No, haven't witnessed directly" /><span class="opt-label">No, I haven't witnessed this directly</span></label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <div class="q-card" data-qid="M_Q13_Marriage_Fear" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 12</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Do current one-sided matrimonial and criminal laws make you hesitant or fearful of marriage in the future?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q13_Marriage_Fear" value="Yes—genuinely afraid or cautious" /><span class="opt-label">Yes — it genuinely makes me afraid or cautious about marriage</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q13_Marriage_Fear" value="Somewhat—think about legal protection more" /><span class="opt-label">Somewhat — I think about legal protection and background checks much more now</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="M_Q13_Marriage_Fear" value="No—doesn't affect view" /><span class="opt-label">No — it doesn't affect my view on marriage</span></label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+    `;
+
+    const TEMPLATE_Q11B = `
+      <div class="why-thread" data-qid="M_Q11b_Why_Silent" data-type="checkbox" data-max="2">
+        <div class="why-tag">↳ Follow-Up • Select up to 2</div>
+        <div class="q-title">WHY do you keep your emotional pain hidden instead of asking for help?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q11b_Why_Silent" value="Don't want to burden parents" /><span class="opt-label">I don't want to burden or worry my parents who rely on me to be strong</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q11b_Why_Silent" value="Nobody truly cares / told to man up" /><span class="opt-label">Nobody truly cares about a man's pain — people just tell you to "man up"</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q11b_Why_Silent" value="Fear vulnerability will be used against me" /><span class="opt-label">Fear that my partner or peers will judge me or use my vulnerability against me later</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="M_Q11b_Why_Silent" value="Male friends only joke or talk work/sports" /><span class="opt-label">Even among male friends, we joke around or talk about work/sports rather than deep pain</span></label>
+        </div>
+        <input class="text-input" type="text" name="M_Q11b_Why_Silent_Other" placeholder="Other reason (optional)..." />
+        <div class="error-slot"></div>
+      </div>
+    `;
+
+    const TEMPLATE_WOMEN_SECTION = `
+      <div class="section-divider">
+        <h2>How Women View the Male Side</h2>
+        <span class="section-tag">Women's Section</span>
+      </div>
+
+      <div class="q-card" data-qid="W_Q14_Witnessed_Male_Pain" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 09</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Have you ever witnessed a man close to you (father, brother, partner, or friend) suffer silently from mental stress, financial pressure, or abuse while putting on a strong face?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q14_Witnessed_Male_Pain" value="Yes, seen closely and it changed my view" /><span class="opt-label">Yes, I have seen it closely and it changed how I view men's struggles</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q14_Witnessed_Male_Pain" value="Yes, somewhat, though men rarely talk about it" /><span class="opt-label">Yes, somewhat, though men rarely talk about it</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q14_Witnessed_Male_Pain" value="No, men around me have an easier life" /><span class="opt-label">No, the men around me generally have an easier life</span></label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <div class="q-card" data-qid="W_Q15_Marry_Lower_Earner" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 10</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Be completely honest: Would you (or most women in your circle) comfortably marry a man who earns significantly less than you or wants to be a stay-at-home husband?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q15_Marry_Lower_Earner" value="Honestly, no—women and families expect man to earn equal or more" /><span class="opt-label">Honestly, no — most women and their families still expect the man to earn equal or more</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q15_Marry_Lower_Earner" value="Personally wouldn't mind, but family/society would never respect him" /><span class="opt-label">Personally I wouldn't mind, but my family and society would never respect him</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q15_Marry_Lower_Earner" value="Yes, his income doesn't matter at all" /><span class="opt-label">Yes, his income doesn't matter at all</span></label>
+        </div>
+        <div class="error-slot"></div>
+        <div id="slot-q15b"></div>
+      </div>
+
+      <div class="q-card" data-qid="W_Q16_Seen_Misuse" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 11</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">Have you personally seen or heard of women around you (in college, workplace, or social circles) misusing gender privileges or threatening false complaints during personal fights/breakups?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q16_Seen_Misuse" value="Yes, seen or heard of it happening around me" /><span class="opt-label">Yes, I have seen or heard of it happening around me</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q16_Seen_Misuse" value="Haven't seen personally, but know it happens" /><span class="opt-label">I haven't seen it personally, but I know it happens in society</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q16_Seen_Misuse" value="No, women only use laws when genuinely harmed" /><span class="opt-label">No, women only use these laws when genuinely harmed</span></label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+
+      <div class="q-card" data-qid="W_Q17_Reaction_Vulnerability" data-type="radio">
+        <div class="q-header">
+          <span class="q-num">Question 12</span>
+          <span class="q-badge">Required</span>
+        </div>
+        <div class="q-title">When a man breaks down, cries, or shows deep vulnerability in front of a woman, how do most women genuinely react inside?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q17_Reaction_Vulnerability" value="Feel deeper empathy and respect" /><span class="opt-label">They feel deeper empathy and respect his honesty</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q17_Reaction_Vulnerability" value="Support in moment, but feel less secure if weak often" /><span class="opt-label">They support him in the moment, but if he appears weak too often, they feel less secure with him</span></label>
+          <label class="opt-card"><input class="opt-input" type="radio" name="W_Q17_Reaction_Vulnerability" value="Feel uncomfortable because men are expected to be the rock" /><span class="opt-label">They feel uncomfortable because men are expected to be the emotional rock</span></label>
+        </div>
+        <div class="error-slot"></div>
+      </div>
+    `;
+
+    const TEMPLATE_Q15B = `
+      <div class="why-thread" data-qid="W_Q15b_Why_Income_Matters" data-type="checkbox" data-max="2">
+        <div class="why-tag">↳ Follow-Up • Select up to 2</div>
+        <div class="q-title">WHY do you think a man's income and status still matter so much even when women are financially independent?</div>
+        <div class="options-list">
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="W_Q15b_Why_Income_Matters" value="Need for financial security and family planning" /><span class="opt-label">Deep-rooted need for financial security and stability (especially for future family planning)</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="W_Q15b_Why_Income_Matters" value="Relatives and society humiliate couple" /><span class="opt-label">Relatives and society humiliate a couple where the husband earns less</span></label>
+          <label class="opt-card"><input class="opt-input" type="checkbox" name="W_Q15b_Why_Income_Matters" value="Women naturally feel more secure with stronger earner" /><span class="opt-label">Women naturally feel more secure when a man is ambitious and financially stronger</span></label>
+        </div>
+        <input class="text-input" type="text" name="W_Q15b_Why_Income_Other" placeholder="Other reason (optional)..." />
+        <div class="error-slot"></div>
+      </div>
+    `;
+
+    let currentMountedGender = null;
+
+    function syncSelectedVisuals() {
+      document.querySelectorAll('.opt-card').forEach(label => {
+        const input = label.querySelector('.opt-input');
+        if (input && input.checked) {
+          label.classList.add('selected');
+        } else {
+          label.classList.remove('selected');
+        }
+      });
+    }
+
+    function updateProgress() {
+      const requiredBlocks = document.querySelectorAll('[data-qid]');
+      let answered = 0;
+      requiredBlocks.forEach(block => {
+        const type = block.dataset.type;
+        if (block.querySelectorAll(`input[type="${type}"]:checked`).length > 0) {
+          answered++;
+        }
+      });
+      const pct = requiredBlocks.length ? Math.round((answered / requiredBlocks.length) * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressPct').textContent = pct + '%';
+    }
+
+    form.addEventListener('change', (e) => {
+      // Enforce max selection on checkboxes
+      if (e.target.type === 'checkbox') {
+        const block = e.target.closest('[data-qid]');
+        const max = parseInt(block?.dataset.max || '99', 10);
+        const checked = block.querySelectorAll('input[type="checkbox"]:checked');
+        if (checked.length > max) {
+          e.target.checked = false;
+        }
+      }
+
+      // Clear validation error on answer
+      const parentBlock = e.target.closest('[data-qid]');
+      if (parentBlock) {
+        parentBlock.classList.remove('has-error');
+        const errSlot = parentBlock.querySelector(':scope > .error-slot');
+        if (errSlot) errSlot.innerHTML = '';
+      }
+
+      const data = new FormData(form);
+
+      // 1. Dynamic Gender Section Mounting
+      const gender = data.get('Q1_Gender');
+      if (gender !== currentMountedGender) {
+        currentMountedGender = gender;
+        if (gender === 'Male') {
+          slotGender.innerHTML = TEMPLATE_MEN_SECTION;
+        } else if (gender === 'Female') {
+          slotGender.innerHTML = TEMPLATE_WOMEN_SECTION;
+        } else {
+          slotGender.innerHTML = '';
+        }
+      }
+
+      // 2. Dynamic Q4 Why Mount
+      const q3 = data.get('Q3_Struggles_Ignored');
+      const needQ4 = (
+        q3 === "Yes—nobody talks about men's pain seriously" ||
+        q3 === "Somewhat—it is brought up rarely and quickly dismissed"
+      );
+      if (needQ4 && !slotQ4.innerHTML.trim()) {
+        slotQ4.innerHTML = TEMPLATE_Q4;
+      } else if (!needQ4 && slotQ4.innerHTML.trim()) {
+        slotQ4.innerHTML = '';
+      }
+
+      // 3. Dynamic Q8b Why Mount
+      const q8 = data.get('Q8_Fake_Feminism');
+      const needQ8b = (
+        q8 === "Massive growing problem that ruins innocent men" ||
+        q8 === "Happens sometimes, but genuine abuse is still main issue"
+      );
+      if (needQ8b && !slotQ8b.innerHTML.trim()) {
+        slotQ8b.innerHTML = TEMPLATE_Q8B;
+      } else if (!needQ8b && slotQ8b.innerHTML.trim()) {
+        slotQ8b.innerHTML = '';
+      }
+
+      // 4. Dynamic Men Q11b Why Mount
+      const slotQ11b = document.getElementById('slot-q11b');
+      if (slotQ11b) {
+        const q11 = data.get('M_Q11_Who_To_Talk');
+        const needQ11b = (q11 === "Nobody — I keep it entirely inside and deal with it alone");
+        if (needQ11b && !slotQ11b.innerHTML.trim()) {
+          slotQ11b.innerHTML = TEMPLATE_Q11B;
+        } else if (!needQ11b && slotQ11b.innerHTML.trim()) {
+          slotQ11b.innerHTML = '';
+        }
+      }
+
+      // 5. Dynamic Women Q15b Why Mount
+      const slotQ15b = document.getElementById('slot-q15b');
+      if (slotQ15b) {
+        const q15 = data.get('W_Q15_Marry_Lower_Earner');
+        const needQ15b = (
+          q15 === "Honestly, no—women and families expect man to earn equal or more" ||
+          q15 === "Personally wouldn't mind, but family/society would never respect him"
+        );
+        if (needQ15b && !slotQ15b.innerHTML.trim()) {
+          slotQ15b.innerHTML = TEMPLATE_Q15B;
+        } else if (!needQ15b && slotQ15b.innerHTML.trim()) {
+          slotQ15b.innerHTML = '';
+        }
+      }
+
+      syncSelectedVisuals();
+      updateProgress();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let firstInvalid = null;
+
+      document.querySelectorAll('[data-qid]').forEach(block => {
+        const type = block.dataset.type;
+        const checked = block.querySelectorAll(`input[type="${type}"]:checked`).length;
+        const errSlot = block.querySelector(':scope > .error-slot');
+
+        if (checked === 0) {
+          block.classList.add('has-error');
+          if (errSlot) {
+            errSlot.innerHTML = `<div class="error-banner">Please select an option to continue.</div>`;
+          }
+          if (!firstInvalid) firstInvalid = block;
+        } else {
+          block.classList.remove('has-error');
+          if (errSlot) errSlot.innerHTML = '';
+        }
+      });
+
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Recording your anonymous response...';
+
+      // Canonical schema ensures Google Sheet creates all 22 columns on first run
+      const payload = {
+        Timestamp: new Date().toLocaleString(),
+        Q1_Gender: "",
+        Q2_Age: "",
+        Q3_Struggles_Ignored: "",
+        Q4_Why_Unseen: "",
+        Q4_Why_Unseen_Other: "",
+        Q5_Unemployed_Respect: "",
+        Q6_Media_Trial: "",
+        Q7_Legal_Awareness: "",
+        Q8_Fake_Feminism: "",
+        Q8b_Why_Misuse_Rising: "",
+        Q8b_Why_Misuse_Other: "",
+        Q9_Alimony_Law: "",
+        M_Q10_Top_Pressures: "",
+        M_Q11_Who_To_Talk: "",
+        M_Q11b_Why_Silent: "",
+        M_Q11b_Why_Silent_Other: "",
+        M_Q12_Partner_Abuse: "",
+        M_Q13_Marriage_Fear: "",
+        W_Q14_Witnessed_Male_Pain: "",
+        W_Q15_Marry_Lower_Earner: "",
+        W_Q15b_Why_Income_Matters: "",
+        W_Q15b_Why_Income_Other: "",
+        W_Q16_Seen_Misuse: "",
+        W_Q17_Reaction_Vulnerability: "",
+        Q18_Final_Insight: ""
+      };
+
+      const formData = new FormData(form);
+      for (const [key, val] of formData.entries()) {
+        if (val.trim() !== "") {
+          payload[key] = payload[key] ? `${payload[key]}; ${val}` : val;
+        }
+      }
+
+      try {
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        document.getElementById('progressFill').style.width = '100%';
+        document.getElementById('progressPct').textContent = '100%';
+        document.getElementById('appRoot').innerHTML = `
+          <div class="thank-you-card">
+            <div class="thank-you-icon">✓</div>
+            <h1 style="font-family:'Newsreader',serif;font-size:1.85rem;margin-bottom:10px;">Thank You for Your Candor</h1>
+            <p style="color:var(--ink-secondary);font-size:0.96rem;">Your anonymous response has been recorded in our research dataset.</p>
+          </div>
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Submit Anonymous Response';
+        alert('Could not reach the server. Please check your connection and try again.');
+      }
+    });
+  </script>
+</body>
+</html>
