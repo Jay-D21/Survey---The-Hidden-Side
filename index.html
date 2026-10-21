@@ -142,12 +142,27 @@
       line-height: 1.22;
       letter-spacing: -0.015em;
       color: var(--ink);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
-    .masthead p {
-      font-size: 0.94rem;
+    .about-box {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-left: 3.5px solid var(--accent-warm);
+      border-radius: var(--radius-sm);
+      padding: 13px 15px;
+      margin-bottom: 12px;
+      font-size: 0.91rem;
       color: var(--ink-secondary);
-      line-height: 1.6;
+      line-height: 1.55;
+    }
+    .about-box strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .masthead-note {
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
     }
 
     /* Section Divider */
@@ -460,15 +475,18 @@
   </header>
 
   <main class="container" id="appRoot">
-    <!-- Editorial Masthead -->
+    <!-- Editorial Masthead with Short Form Description -->
     <section class="masthead">
       <div class="meta-pills">
         <span class="meta-pill">100% Anonymous</span>
         <span class="meta-pill">90-Second Read</span>
-        <span class="meta-pill">Adaptive Flow</span>
+        <span class="meta-pill">1 Response Per Person</span>
       </div>
       <h1>The Hidden Side: Unspoken Male Struggles, Laws &amp; Societal Reality</h1>
-      <p>Please answer with complete candor based on lived reality rather than what sounds politically correct. Follow-up questions adapt automatically to your selections.</p>
+      <div class="about-box">
+        <strong>About This Survey:</strong> This independent sociological study explores how Indian society views unspoken male mental health struggles, financial expectations, media trials, and the real-world impact of gender-specific laws.
+      </div>
+      <p class="masthead-note">No names, emails, or personal identifiers are collected. Please answer with complete candor based on lived reality rather than what sounds politically correct—questions adapt automatically to your selections.</p>
     </section>
 
     <form id="surveyForm" novalidate>
@@ -551,7 +569,6 @@
           </label>
         </div>
         <div class="error-slot"></div>
-        <!-- Dynamic mount point for Q4 Why -->
         <div id="slot-q4"></div>
       </div>
 
@@ -645,7 +662,6 @@
           </label>
         </div>
         <div class="error-slot"></div>
-        <!-- Dynamic mount point for Q8b Why -->
         <div id="slot-q8b"></div>
       </div>
 
@@ -691,15 +707,42 @@
   </main>
 
   <script>
-    // Pre-connected to your deployed Google Apps Script Web App URL
+    // Connected to your existing Google Apps Script Web App URL (keeps all previous responses intact)
     const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw02KiksIu8_H9hReXcfVjM9didMDrY3TuwTTK__1BwvnNeJz8cBBolS_pDSpgDNlnd_w/exec";
+    const STORAGE_KEY = "hidden_side_survey_submitted_v1";
+
+    // Method 1: Check if this browser has already submitted (via localStorage or Cookie)
+    function hasAlreadySubmitted() {
+      try {
+        if (localStorage.getItem(STORAGE_KEY) === "true") return true;
+      } catch (_) {}
+      return document.cookie.split(';').some(c => c.trim().startsWith(STORAGE_KEY + '=true'));
+    }
+
+    function markAsSubmitted() {
+      try {
+        localStorage.setItem(STORAGE_KEY, "true");
+      } catch (_) {}
+      document.cookie = `${STORAGE_KEY}=true; max-age=31536000; path=/; SameSite=Lax`;
+    }
+
+    if (hasAlreadySubmitted()) {
+      document.getElementById('progressFill').style.width = '100%';
+      document.getElementById('progressPct').textContent = '100%';
+      document.getElementById('appRoot').innerHTML = `
+        <div class="thank-you-card">
+          <div class="thank-you-icon">✓</div>
+          <h1 style="font-family:'Newsreader',serif;font-size:1.85rem;margin-bottom:10px;">Response Already Recorded</h1>
+          <p style="color:var(--ink-secondary);font-size:0.96rem;">Thank you for participating. To maintain the integrity of this study, only one anonymous submission is permitted per participant.</p>
+        </div>
+      `;
+    }
 
     const form = document.getElementById('surveyForm');
     const slotQ4 = document.getElementById('slot-q4');
     const slotQ8b = document.getElementById('slot-q8b');
     const slotGender = document.getElementById('slot-gender-section');
 
-    // Templates for dynamically mounted conditional blocks
     const TEMPLATE_Q4 = `
       <div class="why-thread" data-qid="Q4_Why_Unseen" data-type="checkbox" data-max="3">
         <div class="why-tag">↳ Follow-Up • Select up to 3</div>
@@ -917,186 +960,191 @@
       document.getElementById('progressPct').textContent = pct + '%';
     }
 
-    form.addEventListener('change', (e) => {
-      // Enforce max selection on checkboxes
-      if (e.target.type === 'checkbox') {
-        const block = e.target.closest('[data-qid]');
-        const max = parseInt(block?.dataset.max || '99', 10);
-        const checked = block.querySelectorAll('input[type="checkbox"]:checked');
-        if (checked.length > max) {
-          e.target.checked = false;
-        }
-      }
-
-      // Clear validation error on answer
-      const parentBlock = e.target.closest('[data-qid]');
-      if (parentBlock) {
-        parentBlock.classList.remove('has-error');
-        const errSlot = parentBlock.querySelector(':scope > .error-slot');
-        if (errSlot) errSlot.innerHTML = '';
-      }
-
-      const data = new FormData(form);
-
-      // 1. Dynamic Gender Section Mounting
-      const gender = data.get('Q1_Gender');
-      if (gender !== currentMountedGender) {
-        currentMountedGender = gender;
-        if (gender === 'Male') {
-          slotGender.innerHTML = TEMPLATE_MEN_SECTION;
-        } else if (gender === 'Female') {
-          slotGender.innerHTML = TEMPLATE_WOMEN_SECTION;
-        } else {
-          slotGender.innerHTML = '';
-        }
-      }
-
-      // 2. Dynamic Q4 Why Mount
-      const q3 = data.get('Q3_Struggles_Ignored');
-      const needQ4 = (
-        q3 === "Yes—nobody talks about men's pain seriously" ||
-        q3 === "Somewhat—it is brought up rarely and quickly dismissed"
-      );
-      if (needQ4 && !slotQ4.innerHTML.trim()) {
-        slotQ4.innerHTML = TEMPLATE_Q4;
-      } else if (!needQ4 && slotQ4.innerHTML.trim()) {
-        slotQ4.innerHTML = '';
-      }
-
-      // 3. Dynamic Q8b Why Mount
-      const q8 = data.get('Q8_Fake_Feminism');
-      const needQ8b = (
-        q8 === "Massive growing problem that ruins innocent men" ||
-        q8 === "Happens sometimes, but genuine abuse is still main issue"
-      );
-      if (needQ8b && !slotQ8b.innerHTML.trim()) {
-        slotQ8b.innerHTML = TEMPLATE_Q8B;
-      } else if (!needQ8b && slotQ8b.innerHTML.trim()) {
-        slotQ8b.innerHTML = '';
-      }
-
-      // 4. Dynamic Men Q11b Why Mount
-      const slotQ11b = document.getElementById('slot-q11b');
-      if (slotQ11b) {
-        const q11 = data.get('M_Q11_Who_To_Talk');
-        const needQ11b = (q11 === "Nobody — I keep it entirely inside and deal with it alone");
-        if (needQ11b && !slotQ11b.innerHTML.trim()) {
-          slotQ11b.innerHTML = TEMPLATE_Q11B;
-        } else if (!needQ11b && slotQ11b.innerHTML.trim()) {
-          slotQ11b.innerHTML = '';
-        }
-      }
-
-      // 5. Dynamic Women Q15b Why Mount
-      const slotQ15b = document.getElementById('slot-q15b');
-      if (slotQ15b) {
-        const q15 = data.get('W_Q15_Marry_Lower_Earner');
-        const needQ15b = (
-          q15 === "Honestly, no—women and families expect man to earn equal or more" ||
-          q15 === "Personally wouldn't mind, but family/society would never respect him"
-        );
-        if (needQ15b && !slotQ15b.innerHTML.trim()) {
-          slotQ15b.innerHTML = TEMPLATE_Q15B;
-        } else if (!needQ15b && slotQ15b.innerHTML.trim()) {
-          slotQ15b.innerHTML = '';
-        }
-      }
-
-      syncSelectedVisuals();
-      updateProgress();
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      let firstInvalid = null;
-
-      document.querySelectorAll('[data-qid]').forEach(block => {
-        const type = block.dataset.type;
-        const checked = block.querySelectorAll(`input[type="${type}"]:checked`).length;
-        const errSlot = block.querySelector(':scope > .error-slot');
-
-        if (checked === 0) {
-          block.classList.add('has-error');
-          if (errSlot) {
-            errSlot.innerHTML = `<div class="error-banner">Please select an option to continue.</div>`;
+    if (form) {
+      form.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox') {
+          const block = e.target.closest('[data-qid]');
+          const max = parseInt(block?.dataset.max || '99', 10);
+          const checked = block.querySelectorAll('input[type="checkbox"]:checked');
+          if (checked.length > max) {
+            e.target.checked = false;
           }
-          if (!firstInvalid) firstInvalid = block;
-        } else {
-          block.classList.remove('has-error');
+        }
+
+        const parentBlock = e.target.closest('[data-qid]');
+        if (parentBlock) {
+          parentBlock.classList.remove('has-error');
+          const errSlot = parentBlock.querySelector(':scope > .error-slot');
           if (errSlot) errSlot.innerHTML = '';
         }
+
+        const data = new FormData(form);
+
+        // 1. Dynamic Gender Section Mounting
+        const gender = data.get('Q1_Gender');
+        if (gender !== currentMountedGender) {
+          currentMountedGender = gender;
+          if (gender === 'Male') {
+            slotGender.innerHTML = TEMPLATE_MEN_SECTION;
+          } else if (gender === 'Female') {
+            slotGender.innerHTML = TEMPLATE_WOMEN_SECTION;
+          } else {
+            slotGender.innerHTML = '';
+          }
+        }
+
+        // 2. Dynamic Q4 Why Mount
+        const q3 = data.get('Q3_Struggles_Ignored');
+        const needQ4 = (
+          q3 === "Yes—nobody talks about men's pain seriously" ||
+          q3 === "Somewhat—it is brought up rarely and quickly dismissed"
+        );
+        if (needQ4 && !slotQ4.innerHTML.trim()) {
+          slotQ4.innerHTML = TEMPLATE_Q4;
+        } else if (!needQ4 && slotQ4.innerHTML.trim()) {
+          slotQ4.innerHTML = '';
+        }
+
+        // 3. Dynamic Q8b Why Mount
+        const q8 = data.get('Q8_Fake_Feminism');
+        const needQ8b = (
+          q8 === "Massive growing problem that ruins innocent men" ||
+          q8 === "Happens sometimes, but genuine abuse is still main issue"
+        );
+        if (needQ8b && !slotQ8b.innerHTML.trim()) {
+          slotQ8b.innerHTML = TEMPLATE_Q8B;
+        } else if (!needQ8b && slotQ8b.innerHTML.trim()) {
+          slotQ8b.innerHTML = '';
+        }
+
+        // 4. Dynamic Men Q11b Why Mount
+        const slotQ11b = document.getElementById('slot-q11b');
+        if (slotQ11b) {
+          const q11 = data.get('M_Q11_Who_To_Talk');
+          const needQ11b = (q11 === "Nobody — I keep it entirely inside and deal with it alone");
+          if (needQ11b && !slotQ11b.innerHTML.trim()) {
+            slotQ11b.innerHTML = TEMPLATE_Q11B;
+          } else if (!needQ11b && slotQ11b.innerHTML.trim()) {
+            slotQ11b.innerHTML = '';
+          }
+        }
+
+        // 5. Dynamic Women Q15b Why Mount
+        const slotQ15b = document.getElementById('slot-q15b');
+        if (slotQ15b) {
+          const q15 = data.get('W_Q15_Marry_Lower_Earner');
+          const needQ15b = (
+            q15 === "Honestly, no—women and families expect man to earn equal or more" ||
+            q15 === "Personally wouldn't mind, but family/society would never respect him"
+          );
+          if (needQ15b && !slotQ15b.innerHTML.trim()) {
+            slotQ15b.innerHTML = TEMPLATE_Q15B;
+          } else if (!needQ15b && slotQ15b.innerHTML.trim()) {
+            slotQ15b.innerHTML = '';
+          }
+        }
+
+        syncSelectedVisuals();
+        updateProgress();
       });
 
-      if (firstInvalid) {
-        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (hasAlreadySubmitted()) return;
 
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.textContent = 'Recording your anonymous response...';
+        let firstInvalid = null;
 
-      // Canonical schema ensures Google Sheet creates all 22 columns on first run
-      const payload = {
-        Timestamp: new Date().toLocaleString(),
-        Q1_Gender: "",
-        Q2_Age: "",
-        Q3_Struggles_Ignored: "",
-        Q4_Why_Unseen: "",
-        Q4_Why_Unseen_Other: "",
-        Q5_Unemployed_Respect: "",
-        Q6_Media_Trial: "",
-        Q7_Legal_Awareness: "",
-        Q8_Fake_Feminism: "",
-        Q8b_Why_Misuse_Rising: "",
-        Q8b_Why_Misuse_Other: "",
-        Q9_Alimony_Law: "",
-        M_Q10_Top_Pressures: "",
-        M_Q11_Who_To_Talk: "",
-        M_Q11b_Why_Silent: "",
-        M_Q11b_Why_Silent_Other: "",
-        M_Q12_Partner_Abuse: "",
-        M_Q13_Marriage_Fear: "",
-        W_Q14_Witnessed_Male_Pain: "",
-        W_Q15_Marry_Lower_Earner: "",
-        W_Q15b_Why_Income_Matters: "",
-        W_Q15b_Why_Income_Other: "",
-        W_Q16_Seen_Misuse: "",
-        W_Q17_Reaction_Vulnerability: "",
-        Q18_Final_Insight: ""
-      };
+        document.querySelectorAll('[data-qid]').forEach(block => {
+          const type = block.dataset.type;
+          const checked = block.querySelectorAll(`input[type="${type}"]:checked`).length;
+          const errSlot = block.querySelector(':scope > .error-slot');
 
-      const formData = new FormData(form);
-      for (const [key, val] of formData.entries()) {
-        if (val.trim() !== "") {
-          payload[key] = payload[key] ? `${payload[key]}; ${val}` : val;
-        }
-      }
-
-      try {
-        await fetch(WEBHOOK_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
+          if (checked === 0) {
+            block.classList.add('has-error');
+            if (errSlot) {
+              errSlot.innerHTML = `<div class="error-banner">Please select an option to continue.</div>`;
+            }
+            if (!firstInvalid) firstInvalid = block;
+          } else {
+            block.classList.remove('has-error');
+            if (errSlot) errSlot.innerHTML = '';
+          }
         });
 
-        document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('progressPct').textContent = '100%';
-        document.getElementById('appRoot').innerHTML = `
-          <div class="thank-you-card">
-            <div class="thank-you-icon">✓</div>
-            <h1 style="font-family:'Newsreader',serif;font-size:1.85rem;margin-bottom:10px;">Thank You for Your Candor</h1>
-            <p style="color:var(--ink-secondary);font-size:0.96rem;">Your anonymous response has been recorded in our research dataset.</p>
-          </div>
-        `;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (err) {
-        btn.disabled = false;
-        btn.textContent = 'Submit Anonymous Response';
-        alert('Could not reach the server. Please check your connection and try again.');
-      }
-    });
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.textContent = 'Recording your anonymous response...';
+
+        // Exact same 22-column schema so your existing Google Sheet keeps receiving rows seamlessly
+        const payload = {
+          Timestamp: new Date().toLocaleString(),
+          Q1_Gender: "",
+          Q2_Age: "",
+          Q3_Struggles_Ignored: "",
+          Q4_Why_Unseen: "",
+          Q4_Why_Unseen_Other: "",
+          Q5_Unemployed_Respect: "",
+          Q6_Media_Trial: "",
+          Q7_Legal_Awareness: "",
+          Q8_Fake_Feminism: "",
+          Q8b_Why_Misuse_Rising: "",
+          Q8b_Why_Misuse_Other: "",
+          Q9_Alimony_Law: "",
+          M_Q10_Top_Pressures: "",
+          M_Q11_Who_To_Talk: "",
+          M_Q11b_Why_Silent: "",
+          M_Q11b_Why_Silent_Other: "",
+          M_Q12_Partner_Abuse: "",
+          M_Q13_Marriage_Fear: "",
+          W_Q14_Witnessed_Male_Pain: "",
+          W_Q15_Marry_Lower_Earner: "",
+          W_Q15b_Why_Income_Matters: "",
+          W_Q15b_Why_Income_Other: "",
+          W_Q16_Seen_Misuse: "",
+          W_Q17_Reaction_Vulnerability: "",
+          Q18_Final_Insight: ""
+        };
+
+        const formData = new FormData(form);
+        for (const [key, val] of formData.entries()) {
+          if (val.trim() !== "") {
+            payload[key] = payload[key] ? `${payload[key]}; ${val}` : val;
+          }
+        }
+
+        try {
+          await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+
+          // Lock browser so the user cannot submit a second time
+          markAsSubmitted();
+
+          document.getElementById('progressFill').style.width = '100%';
+          document.getElementById('progressPct').textContent = '100%';
+          document.getElementById('appRoot').innerHTML = `
+            <div class="thank-you-card">
+              <div class="thank-you-icon">✓</div>
+              <h1 style="font-family:'Newsreader',serif;font-size:1.85rem;margin-bottom:10px;">Thank You for Your Candor</h1>
+              <p style="color:var(--ink-secondary);font-size:0.96rem;">Your anonymous response has been recorded in our research dataset.</p>
+            </div>
+          `;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (err) {
+          btn.disabled = false;
+          btn.textContent = 'Submit Anonymous Response';
+          alert('Could not reach the server. Please check your connection and try again.');
+        }
+      });
+    }
   </script>
 </body>
 </html>
